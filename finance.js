@@ -12,15 +12,19 @@ function getData()
 }
 
 function addData(body)
-{
-    const financeData = JSON.parse(this.getData());
+{   
+    let financeData = this.getData();
+    if (financeData.length > 0) {
+        financeData = JSON.parse(financeData);
+    } else {
+        financeData = [];
+    }
     body = JSON.parse(body);
     const transactionData = {
         name: body.name, 
         transactionType: body.typeOfTransaction,
         amount: body.amount 
     };
-    console.log(transactionData);
     financeData.push(transactionData);
     fs.writeFileSync("data/finance.json", JSON.stringify(financeData));
     return JSON.stringify(transactionData);
