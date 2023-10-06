@@ -1,8 +1,6 @@
 const http = require("http");
 require("dotenv").config();
 const finance = require("./finance.js");
-
-
 const PORT = process.env.PORT || 5001;
 
 const server = http.createServer((req, res) => {
@@ -23,11 +21,23 @@ const server = http.createServer((req, res) => {
             break;
         case "POST":
             if (req.url === '/api/add') {
-                const financeData = finance.addData();
-                res.statusCode = 200;
-                res.setHeader("Content-type", "application/json");
-                res.write(financeData);
-                res.end();
+                let body = '';
+                req.on('data', chunk => {
+                    body += chunk.toString(); // convert Buffer to string
+                });
+                req.on('end', () => {
+                    const response = finance.addData(body); 
+                    if (response) {
+                        res.statusCode = 200;
+                        res.setHeader("Content-type", "application/json");
+                        res.write(response);  
+                    }  else {
+                        res.statusCode = 500;
+                        res.setHeader("Content-type", "application/json");
+                        res.write(JSON.stringify({message: "Something went wrong"}));
+                    }
+                    res.end();
+                });
             } else {
                 res.statusCode = 404;
                 res.setHeader("Content-type", "application/json");

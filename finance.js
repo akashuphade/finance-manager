@@ -11,11 +11,22 @@ function getData()
     }
 }
 
-function addData()
+function addData(body)
 {
-    const data = this.getData();
+    const financeData = JSON.parse(this.getData());
+    body = JSON.parse(body);
+    const transactionData = {
+        name: body.name, 
+        transactionType: body.typeOfTransaction,
+        amount: body.amount 
+    };
+    console.log(transactionData);
+    financeData.push(transactionData);
+    fs.writeFileSync("data/finance.json", JSON.stringify(financeData));
+    return JSON.stringify(transactionData);
 }
 
-module.exports = {
-    getData: getData
+module.exports =  {    
+    getData: getData,
+    addData: addData
 };
