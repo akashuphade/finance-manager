@@ -6,18 +6,30 @@ const PORT = process.env.PORT || 5001;
 const server = http.createServer((req, res) => {
     switch (req.method) {
         case "GET":
-            if (req.url === '/api/finance') {
-                const financeData = finance.getData();
-                res.statusCode = 200;
-                res.setHeader("Content-type", "application/json");
-                res.write(financeData);
-                res.end();
-            } else {
-                res.statusCode = 404;
-                res.setHeader("Content-type", "application/json");
-                res.write(JSON.stringify({message: "Route not found"}));
-                res.end();
+            switch (req.url) {
+                case '/api/finance':
+                    const financeData = JSON.stringify(finance.getData());
+                    res.statusCode = 200;
+                    res.setHeader("Content-type", "application/json");
+                    res.write(financeData);
+                    res.end();    
+                    break;
+                
+                case '/api/financeSummary':
+                    const financeSummary = finance.getSummary();
+                    res.statusCode = 200;
+                    res.setHeader("Content-type", "application/json");
+                    res.write(financeSummary);
+                    res.end();    
+                    break;
+                default:
+                    res.statusCode = 404;
+                    res.setHeader("Content-type", "application/json");
+                    res.write(JSON.stringify({message: "Route not found"}));
+                    res.end();        
+                    break;
             }
+        
             break;
         case "POST":
             if (req.url === '/api/add') {
